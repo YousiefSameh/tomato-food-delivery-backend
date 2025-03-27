@@ -8,7 +8,7 @@ import fs from "fs";
  * @access  public
 */
 
-const getAllFood = async (req, res) => {
+const getAllFood = async (_, res) => {
 	try {
 		const foods = await foodModel.find({});
 		res.json({ success: true, data: foods });
@@ -25,30 +25,50 @@ const getAllFood = async (req, res) => {
 */
 
 const addFoodItem = async (req, res) => {
-	const image_filename = `${req.file.filename}`;
-	const food = new foodModel({
-		name: req.body.name,
-		description: req.body.description,
-		price: req.body.price,
-		category: req.body.category,
-		image: image_filename,
-	});
+  if (!req.file) {
+    return res.status(400).json({ 
+      success: false, 
+      message: "No image uploaded" 
+    });
+  }
+  
+  if (!req.body.name || !req.body.description || !req.body.price || !req.body.category) {
+    return res.status(400).json({ 
+      success: false, 
+      message: "All Fields Are Required (name, description, price, category)" 
+    });
+  }
 
-	try {
-		const newFood = await food.save();
-		res.status(201).json({ success: true, message: "Food Added Successfully" });
-	} catch (error) {
-		res
-			.status(400)
-			.json({ success: false, message: "Error: " + error.message });
-		fs.unlinkSync(`uploads/${image_filename}`);
-	}
+  const image_filename = req.file.filename;
+
+  const food = new foodModel({
+    name: req.body.name,
+    description: req.body.description,
+    price: req.body.price,
+    category: req.body.category,
+    image: image_filename,
+  });
+
+  try {
+    await food.save();
+    res.status(201).json({ 
+      success: true, 
+      message: "Food Added Successfully" 
+    });
+  } catch (error) {
+    fs.unlinkSync(`uploads/${image_filename}`);
+    res.status(400).json({ 
+      success: false, 
+      message: "Error: " + error.message
+    });
+  }
 };
+
 
 /**
  * @desc    Remove food
  * @route   /api/food/remove
- * @method  DELETE
+ * @method  POST
  * @access  public
 */
 const removeFoodItem = async (req, res) => {
