@@ -93,4 +93,31 @@ const verifyOrder = async (req, res) => {
   }
 };
 
-export { placeOrder, verifyOrder };
+/**
+ * @desc    Get User Orders
+ * @route   /api/order/user-orders
+ * @method  POST
+ * @access  private (logged in user)
+*/
+
+const getUserOrders = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User ID is required" });
+    }
+
+    const orders = await orderModel.find({ userId });
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ success: false, message: "No orders found for this user" });
+    }
+
+    res.json({ success: true, orders });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error: " + error });
+  }
+};
+
+export { placeOrder, verifyOrder, getUserOrders };
