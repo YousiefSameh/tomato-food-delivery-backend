@@ -5,12 +5,65 @@ import orderModel from "../models/order.model.js";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 /**
+ * @desc    Get All Orders
+ * @route   /api/order/list
+ * @method  GET
+ * @access  public
+*/
+
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await orderModel.find({});
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ success: false, message: "No orders found" });
+    }
+
+    res.json({ success: true, orders });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error: " + error });
+  }
+};
+
+/**
+ * @desc    Verify Order
+ * @route   /api/order/verify
+ * @method  GET
+ * @access  private (logged in user)
+*/
+
+const verifyOrder = async (req, res) => {
+  try {
+    const { orderId, success } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ success: false, message: "Order ID is required" });
+    }
+
+    const order = await orderModel.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    if (success === "true") {
+      await orderModel.findByIdAndUpdate(orderId, { payment: true })
+      return res.json({ success: true, message: "Order payment verified successfully" });
+    } else {
+      await orderModel.findByIdAndDelete(orderId)
+      return res.json({ success: false, message: "Order payment failed or cancelled" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error: " + error });
+  }
+};
+
+/**
  * @desc    Place Order
  * @route   /api/order/place
  * @method  POST
  * @access  private (logged in user)
 */
-
 const placeOrder = async (req, res) => {
 
   const frontend_url = "http://localhost:5173";
@@ -60,38 +113,6 @@ const placeOrder = async (req, res) => {
   }
 }
 
-/**
- * @desc    Verify Order
- * @route   /api/order/verify
- * @method  GET
- * @access  private (logged in user)
-*/
-
-const verifyOrder = async (req, res) => {
-  try {
-    const { orderId, success } = req.body;
-
-    if (!orderId) {
-      return res.status(400).json({ success: false, message: "Order ID is required" });
-    }
-
-    const order = await orderModel.findById(orderId);
-
-    if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found" });
-    }
-
-    if (success === "true") {
-      await orderModel.findByIdAndUpdate(orderId, { payment: true })
-      return res.json({ success: true, message: "Order payment verified successfully" });
-    } else {
-      await orderModel.findByIdAndDelete(orderId)
-      return res.json({ success: false, message: "Order payment failed or cancelled" });
-    }
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Error: " + error });
-  }
-};
 
 /**
  * @desc    Get User Orders
@@ -99,7 +120,6 @@ const verifyOrder = async (req, res) => {
  * @method  POST
  * @access  private (logged in user)
 */
-
 const getUserOrders = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -120,4 +140,5 @@ const getUserOrders = async (req, res) => {
   }
 };
 
-export { placeOrder, verifyOrder, getUserOrders };
+
+export { getUserOrders, getAllOrders, placeOrder, verifyOrder };
