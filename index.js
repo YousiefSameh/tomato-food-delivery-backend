@@ -24,7 +24,7 @@ app.use("/api/food", foodRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/user", userRouter);
-app.use("/image", express.static("uploads"));
+app.use("/image", express.static("./uploads"));
 
 app.get("/", (req, res) => res.status(200).send("API Working !"));
 
