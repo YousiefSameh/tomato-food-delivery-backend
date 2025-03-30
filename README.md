@@ -1,19 +1,19 @@
-# Food Delivery Backend
-This repository contains the backend code for the Food Delivery application.
+# Tomato Food Delivery Backend
+Welcome to **Tomato Food Delivery** – a modern backend service for a food delivery web application. This project is designed to provide robust and scalable APIs for frontend consumption, ensuring seamless integration and performance.
 
 ## Features
 
-- User authentication and authorization
-- Restaurant and menu management
-- Order processing and tracking
-- Payment integration
-- API endpoints for frontend consumption
+- Secure user authentication and role-based authorization
+- Comprehensive restaurant and menu management
+- Real-time order processing and tracking
+- Payment gateway integration for smooth transactions
+- Well-documented RESTful API endpoints
 
 ## Technologies Used
 
 - **Programming Language**: Node.js
 - **Framework**: Express.js
-- **Database**: MongoDB
+- **Database**: MongoDB with Mongoose
 - **Authentication**: JSON Web Tokens (JWT)
 - **Payment Gateway**: Stripe
 
@@ -21,11 +21,11 @@ This repository contains the backend code for the Food Delivery application.
 
 1. Clone the repository:
   ```bash
-  git clone https://github.com/your-username/tomato-food-delivery-backend.git
+  git clone https://github.com/YousiefSameh/tomato-food-delivery-backend.git
   ```
 2. Navigate to the project directory:
   ```bash
-  cd food-delivery-backend
+  cd backend
   ```
 3. Install dependencies:
   ```bash
@@ -49,15 +49,15 @@ This repository contains the backend code for the Food Delivery application.
   ```bash
   npm run dev
   ```
-- The server will run on `http://localhost:5000`.
+- The server will be accessible at `http://localhost:5000`.
 
 ## API Documentation
 
-Refer to the [API Documentation](docs/api.md) for detailed information about available endpoints.
+Detailed API documentation is available in the [API Documentation](docs/api.md).
 
 ## Contributing
 
-Contributions are welcome! Please follow the [contribution guidelines](CONTRIBUTING.md).
+We welcome contributions! Please review the [contribution guidelines](CONTRIBUTING.md) before submitting a pull request.
 
 ## License
 
