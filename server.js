@@ -4,6 +4,7 @@ import { connectDB } from "./config/db.js";
 import foodRouter from "./routes/food.routes.js";
 import userRouter from "./routes/user.routes.js";
 import 'dotenv/config.js';
+import cartRouter from "./routes/cart.routes.js";
 
 // App Configs
 const app = express();
@@ -18,6 +19,7 @@ connectDB();
 
 // API Endpoints
 app.use("/api/food", foodRouter);
+app.use("/api/cart", cartRouter);
 app.use("/api/user", userRouter);
 app.use("/image", express.static("uploads"));
 

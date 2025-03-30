@@ -89,12 +89,12 @@ const loginUser = async (req, res) => {
 	try {
 		const user = await userModel.findOne({ email });
 		if (!user) {
-			return res.json({ success: false, message: "User Doesn't Exists" })
+			return res.status(400).json({ success: false, message: "User Doesn't Exists" })
 		}
 
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
-			return res.json({ success: false, message: "The Password Is Invalid Credentials" })
+			return res.status(400).json({ success: false, message: "The Password Is Invalid Credentials" })
 		}
 
 		const token = createToken(user._id);

@@ -18,6 +18,44 @@ const getAllFood = async (_, res) => {
 };
 
 /**
+ * @desc    Get multiple food items by IDs from query params
+ * @route   /api/food/multiple
+ * @method  GET
+ * @access  public
+ */
+
+const getMultipleFoodByIds = async (req, res) => {
+  try {
+    const idsParam = req.params.ids;
+
+    if (!idsParam) {
+      return res.status(400).json({
+        success: false,
+        message: "No IDs provided in query params",
+      });
+    }
+
+    const ids = idsParam.split("&");
+
+    if (ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or empty IDs array",
+      });
+    }
+
+    const foods = await foodModel.find({ _id: { $in: ids } });
+
+    res.json({ success: true, data: foods });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error: " + error.message,
+    });
+  }
+};
+
+/**
  * @desc    Add food
  * @route   /api/food/add
  * @method  POST
@@ -83,4 +121,4 @@ const removeFoodItem = async (req, res) => {
   }
 }
 
-export { getAllFood, addFoodItem, removeFoodItem };
+export { getAllFood, getMultipleFoodByIds, addFoodItem, removeFoodItem };
