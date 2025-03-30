@@ -66,7 +66,7 @@ const verifyOrder = async (req, res) => {
 */
 const placeOrder = async (req, res) => {
 
-  const frontend_url = "http://localhost:5173";
+  const frontend_url = "http://localhost:5174";
 
   try {
     const newOrder = new orderModel({
@@ -140,5 +140,32 @@ const getUserOrders = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Update Order Status
+ * @route   /api/order/update-status
+ * @method  PATCH
+ * @access  public
+ */
 
-export { getUserOrders, getAllOrders, placeOrder, verifyOrder };
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId, status } = req.body;
+
+    if (!orderId || !status) {
+      return res.status(400).json({ success: false, message: "Order ID and status are required" });
+    }
+
+    const validStatuses = ["Food Processing", "Out For Delivery", "Delivered"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: "Invalid order status" });
+    }
+
+    const order = await orderModel.findByIdAndUpdate(orderId, { status: status });
+
+    res.json({ success: true, message: "Order status updated successfully", order });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error: " + error });
+  }
+};
+
+export { getUserOrders, getAllOrders, placeOrder, verifyOrder, updateOrderStatus };
