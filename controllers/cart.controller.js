@@ -40,6 +40,42 @@ const addProductToCart = async (req, res) => {
   }
 }
 
+
+/**
+ *  @desc    Change quantity of a specific product in the cart
+ *  @route   /api/cart/quantity
+ *  @method  PUT
+ *  @access  private (logged in user)
+ */
+
+const changeProductQuantity = async (req, res) => {
+  try {
+    const { userId, itemId, quantity } = req.body;
+
+    if (quantity < 0) {
+      return res.status(400).json({ success: false, message: "Quantity cannot be negative" });
+    }
+
+    const userData = await userModel.findById(userId);
+    const cartData = await userData.cartData;
+
+    if (!cartData[itemId]) {
+      return res.status(404).json({ success: false, message: "The Product Doesn't Exist In Cart" });
+    }
+
+    if (quantity === 0) {
+      delete cartData[itemId];
+    } else {
+      cartData[itemId] = quantity;
+    }
+
+    await userModel.findByIdAndUpdate(userId, { cartData });
+    res.json({ success: true, message: "Product quantity updated successfully" });
+  } catch (error) {
+    res.json({ success: false, message: "Error: " + error });
+  }
+};
+
 /**
  *  @desc     Remove specific cart item
  *  @route   /api/cart/id
@@ -65,4 +101,4 @@ const removeFromCart = async (req, res) => {
   }
 }
 
-export { getLoggedUserCart, addProductToCart, removeFromCart };
+export { getLoggedUserCart, addProductToCart, changeProductQuantity, removeFromCart };
