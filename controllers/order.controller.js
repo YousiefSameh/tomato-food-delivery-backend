@@ -66,7 +66,7 @@ const verifyOrder = async (req, res) => {
 */
 const placeOrder = async (req, res) => {
 
-  const frontend_url = "http://localhost:5174";
+  const frontend_url = "https://tomato-food-delivery-n3l8.onrender.com";
 
   try {
     const newOrder = new orderModel({
